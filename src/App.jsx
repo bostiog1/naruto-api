@@ -4,6 +4,7 @@ import axios from "axios";
 function App() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [imageIndex, setImageIndex] = useState(0);
 
   const url = `https://dattebayo-api.onrender.com/characters`;
   const fetchData = async () => {
@@ -11,7 +12,7 @@ function App() {
       const response = await axios.get(url);
       console.log("response: ", response.data.characters);
       setData(response.data.characters);
-      setError(null)
+      setError(null);
     } catch (error) {
       console.log("Error:", error);
       setError(error);
@@ -22,10 +23,24 @@ function App() {
     fetchData();
   }, []);
 
+  const toggleImage = () => {
+    setImageIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+  };
+
   return (
     <>
       <h1 className="text-3xl font-bold text-center my-8">Naruto Wikipedia</h1>
       {error && <p className="text-red-500">Error: {error.message}</p>}
+
+      <div className="text-center mb-8">
+        <button
+          onClick={toggleImage}
+          className="bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          Future
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {data.map((character) => (
           <div
@@ -34,14 +49,13 @@ function App() {
           >
             <h2 className="text-xl font-semibold mb-2">{character.name}</h2>
             <img
-              src={character.images[0]}
+              src={character.images[imageIndex]}
               alt={character.name}
               className="w-full h-auto mb-4 rounded"
             />
-            <div className="text-sm mb-4">
+            {/* <div className="text-sm mb-4">
               <h3 className="font-semibold">Jutsu:</h3>
-              
-            </div>
+            </div> */}
             <div className="text-sm mb-4">
               <h3 className="font-semibold">Affiliation:</h3>
               <p>{character.personal.affiliation.slice(-1)[0]}</p>
@@ -51,8 +65,8 @@ function App() {
               <p>{character.personal.clan || "Unknown"}</p>
             </div>
             {/* <div className="text-sm mb-4"> */}
-              {/* <h3 className="font-semibold">Ninja Rank:</h3> */}
-              {/* <div className="text-sm mb-4">
+            {/* <h3 className="font-semibold">Ninja Rank:</h3> */}
+            {/* <div className="text-sm mb-4">
                 <h3 className="font-semibold">Ninja Rank:</h3>
                 <p>
                   {character.rank && character.rank.ninjaRank
