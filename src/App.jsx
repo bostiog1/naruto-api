@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import NarutoCard from "./NarutoCard";
 
 function App() {
   const [data, setData] = useState([]);
@@ -7,6 +8,7 @@ function App() {
   const [imageIndex, setImageIndex] = useState(0);
 
   const url = `https://dattebayo-api.onrender.com/characters`;
+
   const fetchData = async () => {
     try {
       const response = await axios.get(url);
@@ -40,44 +42,21 @@ function App() {
           Future
         </button>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {data.map((character) => (
-          <div
-            key={character.id}
-            className="border p-4 rounded shadow-md bg-white"
-          >
-            <h2 className="text-xl font-semibold mb-2">{character.name}</h2>
-            <img
-              src={character.images[imageIndex]}
-              alt={character.name}
-              className="w-full h-auto mb-4 rounded"
+      {data?.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {data.map((character) => (
+            <NarutoCard
+              character={character}
+              key={character.id}
+              imageIndex={imageIndex}
             />
-            {/* <div className="text-sm mb-4">
-              <h3 className="font-semibold">Jutsu:</h3>
-            </div> */}
-            <div className="text-sm mb-4">
-              <h3 className="font-semibold">Affiliation:</h3>
-              <p>{character.personal.affiliation.slice(-1)[0]}</p>
-            </div>
-            <div className="text-sm mb-4">
-              <h3 className="font-semibold">Clan:</h3>
-              <p>{character.personal.clan || "Unknown"}</p>
-            </div>
-            {/* <div className="text-sm mb-4"> */}
-            {/* <h3 className="font-semibold">Ninja Rank:</h3> */}
-            {/* <div className="text-sm mb-4">
-                <h3 className="font-semibold">Ninja Rank:</h3>
-                <p>
-                  {character.rank && character.rank.ninjaRank
-                    ? character.rank.ninjaRank.PartII
-                    : "Unknown"}
-                </p>
-              </div> */}
-            {/* </div> */}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="empty">
+          <h2>No characters found</h2>
+        </div>
+      )}
     </>
   );
 }
